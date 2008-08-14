@@ -1,6 +1,6 @@
 require 'bit-struct'
 
-# Implements version 4 UUIDs as defined in RFC 4122 (http://www.ietf.org/rfc/rfc4122.txt)
+# Implements UUIDs (version 4) as defined in RFC 4122 (http://www.ietf.org/rfc/rfc4122.txt)
 class UUID
   def initialize(bytes = RandomDevice.new.read)
     @bytes = Bytes.new(bytes)
@@ -53,6 +53,7 @@ class UUID::Bytes < BitStruct
 end
 
 class UUID::RandomDevice
+  # Code for using Windows PRNG API taken from ruby-guid (http://rubyforge.org/projects/uuid/)
   if RUBY_PLATFORM =~ /win/i
     
     require 'Win32API'
@@ -62,11 +63,11 @@ class UUID::RandomDevice
     FORMAT_MESSAGE_IGNORE_INSERTS  = 0x00000200
     FORMAT_MESSAGE_FROM_SYSTEM     = 0x00001000
     
-    CryptAcquireContext  = Win32API.new("advapi32", "CryptAcquireContext", 'PPPII', 'L')
-    CryptGenRandom       = Win32API.new("advapi32", "CryptGenRandom", 'LIP', 'L')
-    CryptReleaseContext  = Win32API.new("advapi32", "CryptReleaseContext", 'LI', 'L')
-    GetLastError         = Win32API.new("kernel32", "GetLastError", '', 'L')
-    FormatMessageA       = Win32API.new("kernel32", "FormatMessageA", 'LPLLPLPPPPPPPP', 'L')
+    CryptAcquireContext  = Win32API.new('advapi32', 'CryptAcquireContext', 'PPPII', 'L')
+    CryptGenRandom       = Win32API.new('advapi32', 'CryptGenRandom', 'LIP', 'L')
+    CryptReleaseContext  = Win32API.new('advapi32', 'CryptReleaseContext', 'LI', 'L')
+    GetLastError         = Win32API.new('kernel32', 'GetLastError', '', 'L')
+    FormatMessageA       = Win32API.new('kernel32', 'FormatMessageA', 'LPLLPLPPPPPPPP', 'L')
     
     def read
       hProvStr = ' ' * 4
