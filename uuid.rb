@@ -58,7 +58,10 @@ end
 
 class UUID::RandomDevice
   def read
-    File.read('/dev/urandom', 16)
+    io = proc { File.read('/dev/urandom', 16) }
+    # Crank the RNG a few times
+    10.times { io.call }
+    io.call
   end
 end
 
