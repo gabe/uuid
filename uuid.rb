@@ -1,12 +1,21 @@
 require 'bit-struct'
 
-# Implements UUIDs (version 4) as defined in RFC 4122 (http://www.ietf.org/rfc/rfc4122.txt)
+# Implements UUIDs as defined in RFC 4122 (http://www.ietf.org/rfc/rfc4122.txt)
 class UUID
-  def initialize(bytes = RandomDevice.new.read)
-    @bytes = Bytes.new(bytes)
-    return if bytes.nil?
-    @bytes.clock_seq = (@bytes.clock_seq & 0x3FFF) | 0x8000
-    @bytes.time_hi_and_version = (@bytes.time_hi_and_version & 0x0FFF) | 0x4000
+  FORMAT = %r|^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$|
+  
+  def initialize(bytes = nil)
+    if bytes.nil?
+      # Generate a new UUID (version 4)
+      @bytes = Bytes.new(RandomDevice.new.read)
+      @bytes.clock_seq = (@bytes.clock_seq & 0x3FFF) | 0x8000
+      @bytes.time_hi_and_version = (@bytes.time_hi_and_version & 0x0FFF) | 0x4000
+    elsif bytes =~ FORMAT
+      # Parse a UUID from a string in the standard format
+      @bytes = Bytes.new(bytes.delete('-').downcase.unpack("a2" * 16).collect { |x| x.to_i(16) }.pack("C*"))
+    else
+      raise ArgumentError, "#{bytes} could not be converted into a UUID"
+    end
   end
   
   def ==(other)
@@ -38,10 +47,6 @@ class UUID
       @bytes.node
     ]
   end
-  
-  def to_urn
-    "urn:uuid:#{self}"
-  end
 end
 
 class UUID::Bytes < BitStruct
@@ -53,9 +58,8 @@ class UUID::Bytes < BitStruct
 end
 
 class UUID::RandomDevice
-  # Code for using Windows PRNG API taken from ruby-guid (http://rubyforge.org/projects/uuid/)
-  if RUBY_PLATFORM =~ /win/i
-    
+  # Code for using Win32 PRNG API taken from ruby-guid (http://rubyforge.org/projects/uuid/)
+  if RUBY_PLATFORM =~ /win32/i
     require 'Win32API'
     
     PROV_RSA_FULL                  = 1
@@ -93,9 +97,7 @@ class UUID::RandomDevice
       length = FormatMessageA.call(FORMAT_MESSAGE_IGNORE_INSERTS + FORMAT_MESSAGE_FROM_SYSTEM, 0, code, 0, msg, 1024, nil, nil, nil, nil, nil, nil, nil, nil)
       message[0, length].tr("\r", '').chomp
     end
-    
   else
-    
     def read
       random_device = ['/dev/urandom', '/dev/random'].find { |device| File.readable?(device) }
       unless random_device
@@ -103,8 +105,7 @@ class UUID::RandomDevice
       end
       File.read(random_device, 16)
     end
-    
   end
 end
 
-UUID::Nil = UUID.new(nil).freeze
+UUID::Nil = UUID.new('00000000-0000-0000-0000-000000000000').freeze
