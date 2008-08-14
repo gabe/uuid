@@ -72,7 +72,6 @@ class UUID::Bytes < BitStruct
 end
 
 class UUID::RandomDevice
-  # Code for using Win32 PRNG API taken from ruby-guid (http://rubyforge.org/projects/uuid/)
   if RUBY_PLATFORM =~ /win32/i
     require 'Win32API'
     
