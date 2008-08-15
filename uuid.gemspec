@@ -1,15 +1,4 @@
-require "rake/gempackagetask"
-require "spec/rake/spectask"
-
-task :default => :spec
-
-desc "Run all specs"
-Spec::Rake::SpecTask.new("spec") do |task|
-  task.spec_opts = ["--format", "specdoc", "--colour"]
-  task.spec_files = ["spec/**/*_spec.rb"]
-end
-
-spec = Gem::Specification.new do |s|
+Gem::Specification.new do |s|
   s.name         = 'uuid'
   s.version      = '0.1'
   s.platform     = Gem::Platform::RUBY
@@ -21,8 +10,4 @@ spec = Gem::Specification.new do |s|
   s.require_path = "lib"
   s.files        = %w( LICENSE README.markdown Rakefile ) + Dir["{lib,spec,vendor}/**/*"]
   s.required_ruby_version = ">= 1.8.6"
-end
- 
-Rake::GemPackageTask.new(spec) do |package|
-  package.gem_spec = spec
 end
