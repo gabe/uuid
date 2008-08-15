@@ -2,3 +2,5 @@
 *.rbc
 *.tmproj
 .#*
+pkg
+pkg/*
