@@ -29,11 +29,11 @@ class UUID
   end
   
   def ==(other)
-    other.bytes == bytes
+    eql?(other)
   end
   
   def eql?(other)
-    other.is_a?(self.class) && (other == self)
+    other.is_a?(self.class) && (other.bytes == bytes)
   end
   
   def hash
