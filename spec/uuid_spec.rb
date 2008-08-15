@@ -14,7 +14,7 @@ describe UUID, '#initialize' do
   end
   
   it 'raises an ArgumentError when passed a value it cannot convert into a UUID' do
-    lambda { UUID.new 'garbage' }.should raise_error(ArgumentError)
+    lambda { UUID.new '<garbage>' }.should raise_error(ArgumentError)
   end
 end
 
