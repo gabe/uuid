@@ -19,7 +19,7 @@ describe UUID, '#initialize' do
 end
 
 describe UUID, "#to_i" do
-  it 'returns a 128-bit integer represenation of the UUID'
+  it 'returns a 128-bit integer representation of the UUID'
 end
 
 describe UUID, '#to_s' do
