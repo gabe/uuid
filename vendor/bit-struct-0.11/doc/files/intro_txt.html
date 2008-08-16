@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: intro.txt</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>intro.txt</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>intro.txt
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Tue Jan 22 14:43:32 -0800 2008</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h1><a href="../classes/BitStruct.html">BitStruct</a></h1>
+<p>
+Class for packed binary data stored in ruby Strings. <a
+href="../classes/BitStruct.html">BitStruct</a> accessors, generated from
+user declared fields, use pack/unpack to treat substrings as fields with a
+specified portable format.
+</p>
+<p>
+Field types include:
+</p>
+<ul>
+<li>signed and unsigned integer (1..16 bits, or 24, 32, 40, 48&#8230; bits)
+
+</li>
+<li>numeric fields (signed, unsigned, float) can be designated as any of the
+following endians: little, big, native, network (default)
+
+</li>
+<li>fixed point, with arbitrary scale factor
+
+</li>
+<li>fixed length character array
+
+</li>
+<li>null-terminated character array for printable text
+
+</li>
+<li>octets (hex and decimal representation options; useful for IP and MAC
+addrs)
+
+</li>
+<li>float
+
+</li>
+<li>nested <a href="../classes/BitStruct.html">BitStruct</a>
+
+</li>
+<li>free-form &quot;rest&quot; field (e.g., for the variable-size payload of a
+packet)
+
+</li>
+</ul>
+<p>
+Field options (specifiable as :foo =&gt; val or &quot;foo&quot; =&gt; val)
+include:
+</p>
+<ul>
+<li><b>display_name</b>: used in <a
+href="../classes/BitStruct.html#M000020">BitStruct#inspect_detailed</a> and
+<a href="../classes/BitStruct.html#M000011">BitStruct#describe</a> outputs.
+
+</li>
+<li><b>default</b>: default field value
+
+</li>
+<li><b>format</b>: alternate format string for inspect
+
+</li>
+<li><b>endian</b>: for byte ordering of numeric fields (unsigned, signed,
+float): little, big, native, network (default)
+
+</li>
+<li><b>fixed</b>: float stored as fixed-point integer, with specified scale
+factor
+
+</li>
+</ul>
+<h2>Installation</h2>
+<pre>
+  ruby install.rb config
+  ruby install.rb setup
+  ruby install.rb install
+</pre>
+<h2>Uses</h2>
+<p>
+<a href="../classes/BitStruct.html">BitStruct</a> is useful for defining
+packets used in network protocols. This is especially useful for raw
+IP&#8212;see examples/ping-recv.rb. All multibyte numeric fields are stored
+by default in network order.
+</p>
+<p>
+<a href="../classes/BitStruct.html">BitStruct</a> is most efficient when
+your data is primarily treated as a binary string, and only secondarily
+treated as a data structure. (For instance, you are routing packets from
+one socket to another, possibly looking at one or two fields as it passes
+through or munging some headers.) If accessor operations are a bottleneck,
+a better approach is to define a class that wraps an array and uses
+pack/unpack when the object needs to behave like a binary string.
+</p>
+<h2>Features</h2>
+<ul>
+<li>Extensible with user-defined field classes.
+
+</li>
+<li>Fields are fully introspectable and can be defined programmatically.
+
+</li>
+<li><a href="../classes/BitStruct.html#M000011">BitStruct.describe</a> prints
+out documentation of all the fields of a <a
+href="../classes/BitStruct.html">BitStruct</a> subclass, based on
+declarations. This is useful for communicating with developers who are not
+using ruby, but need to talk the same protocols. See Example, below.
+
+</li>
+<li>Fields are inherited by subclasses. (The free-form &quot;rest&quot; field
+does not inherit, because it usually represents a payload whose structure
+is defined in subclasses using the fixed-size fields.)
+
+</li>
+<li><a href="../classes/BitStruct.html#M000019">BitStruct#inspect</a> and <a
+href="../classes/BitStruct.html#M000020">BitStruct#inspect_detailed</a> can
+be used for prettified display of contents. (More generally, <a
+href="../classes/BitStruct.html#M000019">BitStruct#inspect</a> takes some
+options that control formatting and detail level.) See Example, below.
+
+</li>
+<li><a href="../classes/BitStruct.html">BitStruct</a> inherits from String, so
+all the usual methods are available, and string-sharing (copy-on-write) is
+in effect.
+
+</li>
+<li>Easy access to a &quot;prototype&quot; instance of each <a
+href="../classes/BitStruct.html">BitStruct</a> subclass, from which all
+instances of that subclass are initialized as a copy (in the absence of
+other initialization parameters, such as a hash, a string, or a block). See
+<a href="../classes/BitStruct.html#M000016">BitStruct.initial_value</a>,
+and BitStruct#initialize. See Example, below.
+
+</li>
+<li>Easy conversion to and from hashes, using <a
+href="../classes/BitStruct.html#M000014">BitStruct#to_h</a> and <a
+href="../classes/BitStruct.html#M000013">BitStruct.new</a>.
+
+</li>
+<li>BitStructs can persist using Marshal (a <a
+href="../classes/BitStruct.html">BitStruct</a> is after all just a string)
+or using YAML (with human readable representation of the fields).
+
+</li>
+<li>Includes tests, examples, and rdoc API documentation.
+
+</li>
+</ul>
+<h2>Limitations</h2>
+<ul>
+<li>Fields that are not aligned on byte boundaries may cross no more than two
+bytes boundaries. (See examples/byte-bdy.rb.)
+
+</li>
+<li>No variable length fields (except the rest field).
+
+</li>
+</ul>
+<h2>Future plans</h2>
+<ul>
+<li>Currently, the library is written in pure ruby. The implementation uses
+Array#pack and String#unpack calls, as well as shifting and masking in pure
+ruby. Future versions will optionally generate a customized C extension for
+better efficiency.
+
+</li>
+<li>A debug mode in which a class identifier is prepended to every <a
+href="../classes/BitStruct.html">BitStruct</a>, so that protocol errors can
+be detected. (This feature has been implemented in an app that uses <a
+href="../classes/BitStruct.html">BitStruct</a>, but needs to be refactored
+into the <a href="../classes/BitStruct.html">BitStruct</a> library itself.)
+
+</li>
+<li>Remove field size and alignment limitations.
+
+</li>
+</ul>
+<h2>Example</h2>
+<p>
+An IP packet can be defined and used like this:
+</p>
+<pre>
+  require 'bit-struct'
+
+  class IP &lt; BitStruct
+    unsigned    :ip_v,     4,     &quot;Version&quot;
+    unsigned    :ip_hl,    4,     &quot;Header length&quot;
+    unsigned    :ip_tos,   8,     &quot;TOS&quot;
+    unsigned    :ip_len,  16,     &quot;Length&quot;
+    unsigned    :ip_id,   16,     &quot;ID&quot;
+    unsigned    :ip_off,  16,     &quot;Frag offset&quot;
+    unsigned    :ip_ttl,   8,     &quot;TTL&quot;
+    unsigned    :ip_p,     8,     &quot;Protocol&quot;
+    unsigned    :ip_sum,  16,     &quot;Checksum&quot;
+    octets      :ip_src,  32,     &quot;Source addr&quot;
+    octets      :ip_dst,  32,     &quot;Dest addr&quot;
+    rest        :body,            &quot;Body of message&quot;
+
+    note &quot;     rest is application defined message body&quot;
+
+    initial_value.ip_v    = 4
+    initial_value.ip_hl   = 5
+  end
+
+  ip = IP.new
+  ip.ip_tos = 0
+  ip.ip_len = 0
+  ip.ip_id  = 0
+  ip.ip_off = 0
+  ip.ip_ttl = 255
+  ip.ip_p   = 255
+  ip.ip_sum = 0
+  ip.ip_src = &quot;192.168.1.4&quot;
+  ip.ip_dst = &quot;192.168.1.255&quot;
+  ip.body   = &quot;This is the payload text.&quot;
+  ip.ip_len = ip.length
+
+  puts ip.inspect
+  puts &quot;-&quot;*50
+  puts ip.inspect_detailed
+  puts &quot;-&quot;*50
+  puts IP.describe
+</pre>
+<p>
+(Note that you can also construct an IP packet by passing a string to new,
+or by passing a hash of <tt>field,value</tt> pairs, or by providing a block
+that is yielded the new <a href="../classes/BitStruct.html">BitStruct</a>.)
+</p>
+<p>
+The output of this fragment is:
+</p>
+<pre>
+  #&lt;IP ip_v=4, ip_hl=5, ip_tos=0, ip_len=45, ip_id=0, ip_off=0, ip_ttl=255, ip_p=255, ip_sum=0, ip_src=&quot;192.168.1.4&quot;, ip_dst=&quot;192.168.1.255&quot;, body=&quot;This is the payload text.&quot;&gt;
+  --------------------------------------------------
+  IP:
+                         Version = 4
+                   Header length = 5
+                             TOS = 0
+                          Length = 45
+                              ID = 0
+                     Frag offset = 0
+                             TTL = 255
+                        Protocol = 255
+                        Checksum = 0
+                     Source addr = &quot;192.168.1.4&quot;
+                       Dest addr = &quot;192.168.1.255&quot;
+                 Body of message = &quot;This is the payload text.&quot;
+  --------------------------------------------------
+
+  Description of IP Packet:
+      byte: type         name          [size] description
+  ----------------------------------------------------------------------
+        @0: unsigned     ip_v          [  4b] Version
+        @0: unsigned     ip_hl         [  4b] Header length
+        @1: unsigned     ip_tos        [  8b] TOS
+        @2: unsigned     ip_len        [ 16b] Length
+        @4: unsigned     ip_id         [ 16b] ID
+        @6: unsigned     ip_off        [ 16b] Frag offset
+        @8: unsigned     ip_ttl        [  8b] TTL
+        @9: unsigned     ip_p          [  8b] Protocol
+       @10: unsigned     ip_sum        [ 16b] Checksum
+       @12: octets       ip_src        [ 32b] Source addr
+       @16: octets       ip_dst        [ 32b] Dest addr
+       rest is application defined message body
+</pre>
+<h2>Version</h2>
+<p>
+bit-struct 0.10
+</p>
+<p>
+The current version of this software can be found at <a
+href="http://redshift.sourceforge.net/bit-struct">redshift.sourceforge.net/bit-struct</a>.
+</p>
+<h2>License</h2>
+<p>
+This software is distributed under the Ruby license. See <a
+href="http://www.ruby-lang.org">www.ruby-lang.org</a>.
+</p>
+<h2>Author</h2>
+<p>
+Joel VanderWerf, <a
+href="mailto:vjoel@users.sourceforge.net">vjoel@users.sourceforge.net</a>
+Copyright (c) 2005-2007, Joel VanderWerf.
+</p>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

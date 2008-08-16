@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>add_field (BitStruct)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/bit-struct/bit-struct.rb, line 135</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_field</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">length</span>, <span class="ruby-identifier">opts</span> = {})
+      <span class="ruby-identifier">round_byte_length</span> <span class="ruby-comment cmt">## just to make sure this has been calculated</span>
+      <span class="ruby-comment cmt">## before adding anything</span>
+      
+      <span class="ruby-identifier">name</span> = <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>
+      
+      <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@closed</span>
+        <span class="ruby-identifier">raise</span> <span class="ruby-constant">ClosedClassError</span>, <span class="ruby-node">&quot;Cannot add field #{name}: &quot;</span> <span class="ruby-operator">+</span>
+          <span class="ruby-node">&quot;The definition of the #{self.inspect} BitStruct class is closed.&quot;</span>
+      <span class="ruby-keyword kw">end</span>
+
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">fields</span>.<span class="ruby-identifier">find</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span><span class="ruby-identifier">f</span>.<span class="ruby-identifier">name</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">name</span>}
+        <span class="ruby-identifier">raise</span> <span class="ruby-constant">FieldNameError</span>, <span class="ruby-node">&quot;Field #{name} is already defined as a field.&quot;</span>
+      <span class="ruby-keyword kw">end</span>
+
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">instance_methods</span>(<span class="ruby-keyword kw">true</span>).<span class="ruby-identifier">find</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">m</span><span class="ruby-operator">|</span> <span class="ruby-identifier">m</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">name</span>}
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:allow_method_conflict</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value str">&quot;allow_method_conflict&quot;</span>]
+          <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;Field #{name} is already defined as a method.&quot;</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">raise</span> <span class="ruby-constant">FieldNameError</span>,<span class="ruby-node">&quot;Field #{name} is already defined as a method.&quot;</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      
+      <span class="ruby-identifier">field_class</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:field_class</span>]
+      
+      <span class="ruby-identifier">prev</span> = <span class="ruby-identifier">fields</span>[<span class="ruby-value">-1</span>] <span class="ruby-operator">||</span> <span class="ruby-constant">NULL_FIELD</span>
+      <span class="ruby-identifier">offset</span> = <span class="ruby-identifier">prev</span>.<span class="ruby-identifier">offset</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">prev</span>.<span class="ruby-identifier">length</span>
+      <span class="ruby-identifier">field</span> = <span class="ruby-identifier">field_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">offset</span>, <span class="ruby-identifier">length</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">opts</span>)
+      <span class="ruby-identifier">field</span>.<span class="ruby-identifier">add_accessors_to</span>(<span class="ruby-keyword kw">self</span>)
+      <span class="ruby-identifier">fields</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">field</span>
+      <span class="ruby-identifier">own_fields</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">field</span>
+      <span class="ruby-ivar">@bit_length</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">field</span>.<span class="ruby-identifier">length</span>
+      <span class="ruby-ivar">@round_byte_length</span> = (<span class="ruby-identifier">bit_length</span><span class="ruby-operator">/</span><span class="ruby-value">8.0</span>).<span class="ruby-identifier">ceil</span>
+
+      <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@initial_value</span>
+        <span class="ruby-identifier">diff</span> = <span class="ruby-ivar">@round_byte_length</span> <span class="ruby-operator">-</span> <span class="ruby-ivar">@initial_value</span>.<span class="ruby-identifier">length</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">diff</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+          <span class="ruby-ivar">@initial_value</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value str">&quot;\0&quot;</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">diff</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+
+      <span class="ruby-identifier">field</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

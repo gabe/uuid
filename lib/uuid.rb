@@ -1,6 +1,6 @@
-# Implements UUIDs as defined in RFC 4122 (http://www.ietf.org/rfc/rfc4122.txt)
-
-$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'vendor')
+Dir[File.dirname(__FILE__) + "/../vendor/*"].each do |vendor_lib|
+  $LOAD_PATH.unshift "#{File.expand_path(vendor_lib)}/lib"
+end
 
 require 'bit-struct'
 

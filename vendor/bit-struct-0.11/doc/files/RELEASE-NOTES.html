@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: RELEASE-NOTES</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>RELEASE-NOTES</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>RELEASE-NOTES
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Tue Jan 22 14:44:41 -0800 2008</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+bit-struct 0.11
+</p>
+<ul>
+<li>Allow unaligned fields to cross up to two byte boundaries. See
+examples/byte-bdy.rb.
+
+</li>
+</ul>
+<p>
+bit-struct 0.10
+</p>
+<ul>
+<li>Fixed a bug when calling to_yaml on a <a
+href="../classes/BitStruct.html">BitStruct</a> with a pad field. Thanks to
+Jay Reitz for reporting it and providing the solution.
+
+</li>
+<li>Added <a
+href="../classes/BitStruct.html#M000004">BitStruct.default_options</a>.
+Particularly useful for default endian settings&#8212;see
+examples/native.rb.
+
+</li>
+<li>Fixed a bug that prevented warning about field name conflicts with existing
+methods when the name is given as a symbol.
+
+</li>
+<li>Fixed point fields may now have fractional divisors (like :fixed =&gt;
+0.001).
+
+</li>
+</ul>
+<p>
+bit-struct 0.9
+</p>
+<ul>
+<li>Added examples/field-ripper.rb.
+
+</li>
+<li>Added <a
+href="../classes/BitStruct.html#M000007">BitStruct#field_by_name</a>.
+
+</li>
+<li>Added more warnings about nested field accessors returning a <b>copy</b> of
+the nested data.
+
+</li>
+<li>Added &quot;pad&quot; fields. See documentation in pad-field.rb and
+examples/pad.rb.
+
+</li>
+<li>The initial_value method now yields the value to a block, if given.
+
+</li>
+<li>A <a href="../classes/BitStruct.html">BitStruct</a> class is only closed
+when an instance is created. (After this point no fields can be added.)
+Formerly, a class was closed when any method requested the total length of
+the structure. This change makes it easier to add groups of fields
+modularly, each with their own initial_value block.
+
+</li>
+<li>Added examples/modular-def.rb to explain how to factor a <a
+href="../classes/BitStruct.html">BitStruct</a> definition into modules.
+
+</li>
+</ul>
+<p>
+bit-struct 0.8
+</p>
+<ul>
+<li>Signed fields can now (like unsigned fields) be any multiple of 8 bits, and
+are accessed as fixnums or bignums, as needed.
+
+</li>
+<li>It&#8216;s easier to subclass <a
+href="../classes/BitStruct/OctetField.html">BitStruct::OctetField</a>. <a
+href="../classes/BitStruct/HexOctetField.html">BitStruct::HexOctetField</a>
+is now implemented in this way, just by defining three constants and two
+trivial class methods.
+
+</li>
+</ul>
+<p>
+bit-struct 0.7
+</p>
+<ul>
+<li><a href="../classes/BitStruct.html#M000011">BitStruct.describe</a> now
+takes an option hash, and the :expand=&gt;true option causes nested fields
+to be expanded in the description.
+
+</li>
+<li>Unsigned integer fields can now be any multiple of 8 bytes: 8, 16, 24, 32,
+40, &#8230; (Fields of 1..15 bits in length are of course still supported.)
+
+</li>
+<li>Added the :endian =&gt; :little option to signed integer, unsigned integer,
+and float fields. The full set of endian options is now [:little, :big,
+:network, :native]. The default is always :network.
+
+</li>
+<li>Option names may be strings or symbols. Values that can be symbols can also
+be strings.
+
+</li>
+<li>Added examples/bignum.rb.
+
+</li>
+<li>Added support for the YAML in ruby 1.8.2 (the YAML in 1.8.4 was already
+supported).
+
+</li>
+</ul>
+<p>
+bit-struct 0.6
+</p>
+<ul>
+<li>Added the :endian =&gt; :native option for numerical fields (signed,
+unsigned, float).
+
+</li>
+<li>Fixed error message with 9..15 bit fields aligned on byte boundary.
+
+</li>
+<li>The initial_value is now inherited (before applying defaults).
+
+</li>
+<li>New examples: raw.rb, native.rb.
+
+</li>
+</ul>
+<p>
+bit-struct 0.5
+</p>
+<ul>
+<li>Integer fields may now cross byte boundaries, as long as the field fits
+within two whole bytes.
+
+</li>
+</ul>
+<p>
+bit-struct 0.4
+</p>
+<ul>
+<li>Fixed a bug in reading text and char fields in YAML: if the value was
+interpreted by YAML as something other than a string, an error would
+result.
+
+</li>
+<li>When BitStructs are loaded from yaml, the key is treated as a setter
+method, rather than a field. This is useful in case there is a field that
+needs special setters to accept humanly readable input. (For example, a
+char field with length-prefixed subfields.)
+
+</li>
+</ul>
+<p>
+bit-struct 0.3
+</p>
+<ul>
+<li><a href="../classes/BitStruct.html">BitStruct</a> classes are now YAML
+friendly.
+
+</li>
+<li>The default behavior of <a
+href="../classes/BitStruct.html#M000019">BitStruct#inspect</a> and <a
+href="../classes/BitStruct.html#M000020">BitStruct#inspect_detailed</a> is
+changed to print out the &quot;rest&quot; field, if any. This can be
+disabled by passing inspect an options hash with :include_rest =&gt; false.
+See BitStruct::DEFAULT_INSPECT_OPTS and BitStruct::DETAILED_INSPECT_OPTS.
+See examples/ip.rb and examples/rest.rb.
+
+</li>
+<li>The default behavior of <a
+href="../classes/BitStruct.html#M000014">BitStruct#to_h</a> is changed to
+include the &quot;rest&quot; field. As above, this can be disabled by
+passing to_h an options hash with :include_rest =&gt; false.
+
+</li>
+<li>The default behavior of <a
+href="../classes/BitStruct.html#M000015">BitStruct#to_a</a> is changed to
+include the &quot;rest&quot; field. As above, this can be disabled by
+passing false as an argument to to_a.
+
+</li>
+</ul>
+<p>
+bit-struct 0.2
+</p>
+<ul>
+<li>first public release
+
+</li>
+</ul>
+<p>
+bit-struct 0.1
+</p>
+<ul>
+<li>first release
+
+</li>
+</ul>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

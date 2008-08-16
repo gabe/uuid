@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>rest (BitStruct)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/bit-struct/bit-struct.rb, line 488</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">rest</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">ary</span>)
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@rest_field</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;Duplicate rest field: #{name.inspect}.&quot;</span>
+    <span class="ruby-keyword kw">end</span>
+    
+    <span class="ruby-identifier">opts</span> = <span class="ruby-identifier">parse_options</span>(<span class="ruby-identifier">ary</span>, <span class="ruby-identifier">name</span>, <span class="ruby-constant">String</span>)
+    <span class="ruby-identifier">offset</span> = <span class="ruby-identifier">round_byte_length</span>
+    <span class="ruby-identifier">byte_range</span> = <span class="ruby-identifier">offset</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>
+    <span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>
+      <span class="ruby-identifier">field_class</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:field_class</span>]
+      <span class="ruby-identifier">define_method</span> <span class="ruby-identifier">name</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">||</span>
+        <span class="ruby-identifier">field_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword kw">self</span>[<span class="ruby-identifier">byte_range</span>])
+      <span class="ruby-keyword kw">end</span>
+
+      <span class="ruby-identifier">define_method</span> <span class="ruby-node">&quot;#{name}=&quot;</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">val</span><span class="ruby-operator">|</span>
+        <span class="ruby-keyword kw">self</span>[<span class="ruby-identifier">byte_range</span>] = <span class="ruby-identifier">val</span>
+      <span class="ruby-keyword kw">end</span>
+      
+      <span class="ruby-ivar">@rest_field</span> = <span class="ruby-constant">Field</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">offset</span>, <span class="ruby-value">-1</span>, <span class="ruby-identifier">name</span>, {
+        <span class="ruby-identifier">:display_name</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">opts</span>[<span class="ruby-identifier">:display_name</span>],
+        <span class="ruby-identifier">:rest_class</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">field_class</span>
+      })
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
