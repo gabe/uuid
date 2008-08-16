@@ -10,3 +10,8 @@ and CryptGenRandom on Windows). All other Ruby UUID libraries I looked at either
 used the much more complex version 1 generation algorithm (using MAC address and
 unique timestamp), or used random bytes, but didn't properly set the version and
 reserved flags.
+
+Author
+------
+
+Gabriel Boyer (gboyer@gmail.com)
