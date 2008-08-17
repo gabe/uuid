@@ -5,6 +5,12 @@ describe UUID, '#initialize' do
     UUID.new.should_not == UUID.new
   end
   
+  it 'generates new UUIDs with with the version flag set to 4' do
+    10.times do
+      UUID.new.to_s.should =~ /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
+    end
+  end
+  
   it 'creates a UUID from a valid string representation when passed one' do
     id = UUID.new
     UUID::FORMATS.each do |name, _|
@@ -24,27 +30,26 @@ end
 
 describe UUID, '#to_s' do
   
-  COMPACT_FORMAT = /[0-9a-fA-F]{8}([0-9a-fA-F]{4}){3}[0-9a-fA-F]{12}/
-  DEFAULT_FORMAT = /[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}/
+  default_format = /[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}/
   
   before do
     @id = UUID.new
   end
 
   it 'returns a UUID string in delimited hex format when passed no parameters (i.e., xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)' do
-    @id.to_s.should =~ /^#{DEFAULT_FORMAT}$/
+    @id.to_s.should =~ /^#{default_format}$/
   end
 
   it 'returns a UUID string in delimited hex format when passed :default (i.e., xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)' do
-    @id.to_s(:default).should =~ /^#{DEFAULT_FORMAT}$/
+    @id.to_s(:default).should =~ /^#{default_format}$/
   end
 
   it 'returns a UUID string in undelimited hex format when passed :compact (i.e., xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx)' do |variable|
-    @id.to_s(:compact).should =~ /^#{COMPACT_FORMAT}$/
+    @id.to_s(:compact).should =~ /^[0-9a-fA-F]{8}([0-9a-fA-F]{4}){3}[0-9a-fA-F]{12}$/
   end
 
   it 'returns a UUID string in delimited hex format with a urn prefix when passed :urn (i.e., urn:uuid:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)' do
-    @id.to_s(:urn).should =~ /^urn:uuid:#{DEFAULT_FORMAT}$/
+    @id.to_s(:urn).should =~ /^urn:uuid:#{default_format}$/
   end
 end
 
