@@ -5,10 +5,8 @@ describe UUID, '#initialize' do
     UUID.new.should_not == UUID.new
   end
   
-  it 'generates new UUIDs with with the version flag set to 4' do
-    10.times do
-      UUID.new.to_s.should =~ /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
-    end
+  it 'flags generated UUIDs as version 4' do
+    UUID.new.to_s.should =~ /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
   end
   
   it 'creates a UUID from a valid string representation when passed one' do
