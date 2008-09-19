@@ -11,7 +11,7 @@ class UUID
     :urn     => "urn:uuid:%08x-%04x-%04x-%04x-%04x%08x"
   }
   
-  REGEXP = %r|^(urn:uuid:)?[0-9a-fA-F]{8}((-)?[0-9a-fA-F]{4}){3}(-)?[0-9a-fA-F]{12}$|
+  REGEXP = /^(urn:uuid:)?[0-9a-fA-F]{8}((-)?[0-9a-fA-F]{4}){3}(-)?[0-9a-fA-F]{12}$/
   
   def initialize(bytes = nil)
     if bytes.nil?
