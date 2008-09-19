@@ -22,10 +22,6 @@ describe UUID, '#initialize' do
   end
 end
 
-describe UUID, "#to_i" do
-  it 'returns a 128-bit integer representation of the UUID'
-end
-
 describe UUID, '#to_s' do
   
   default_format = /[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}/
