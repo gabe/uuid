@@ -5,7 +5,7 @@ rescue LoadError
 end
 
 class UUID
-  def initialize(value = nil)
+  def initialize(value)
     @value = Integer(value)
     unless (@value >= 0) && (@value < (1 << 128))
       raise RangeError, "#{value} (Integer value #{@value}) is out of range (need unsigned 128-bit value)"
