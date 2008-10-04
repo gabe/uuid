@@ -1,18 +1,13 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
-describe UUID, '.uuid4' do
-  it 'generates a new UUID' do
-    UUID.uuid4.should be_a_kind_of(UUID)
-    UUID.uuid4.should_not == UUID.uuid4
+describe UUID, '.new_from_bytes' do
+  it 'creates a UUID from a 16-byte string' do
+    lambda { UUID.new_from_bytes('x' * 16) }.should_not raise_error
   end
   
-  it 'generates version 4 UUIDs' do
-    UUID.uuid4.to_s.should =~ /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
-    UUID.uuid4.version.should == 4
-  end
-  
-  it 'generates UUIDs of the RFC 4122 variant' do
-    UUID.uuid4.variant.should == UUID::RFC_4122
+  it 'raises an ArgumentError when not passed 16 bytes' do
+    lambda { UUID.new_from_bytes('x' * 15) }.should raise_error(ArgumentError)
+    lambda { UUID.new_from_bytes('x' * 17) }.should raise_error(ArgumentError)
   end
 end
 
@@ -30,6 +25,22 @@ describe UUID, '.parse' do
   end
 end
 
+describe UUID, '.uuid4' do
+  it 'generates a new UUID' do
+    UUID.uuid4.should be_a_kind_of(UUID)
+    UUID.uuid4.should_not == UUID.uuid4
+  end
+  
+  it 'generates version 4 UUIDs' do
+    UUID.uuid4.to_s.should =~ /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
+    UUID.uuid4.version.should == 4
+  end
+  
+  it 'generates UUIDs of the RFC 4122 variant' do
+    UUID.uuid4.variant.should == UUID::RFC_4122
+  end
+end
+
 describe UUID, '#initialize' do
   it 'creates a UUID from an Integer when passed one that is within range for a UUID' do
     id = UUID.uuid4
@@ -44,6 +55,29 @@ describe UUID, '#initialize' do
   it 'raises a RangeError when passed an Integer that is out of range for a UUID' do
     lambda { UUID.new(-1) }.should raise_error(RangeError)
     lambda { UUID.new(1 << 128) }.should raise_error(RangeError)
+  end
+end
+
+describe UUID, '#bytes' do
+  it 'returns a 16-byte representation of the UUID' do
+    UUID.uuid4.bytes.length.should == 16
+  end
+  
+  it 'can be used to reconstruct a UUID, in conjunction with UUID.new_from_bytes' do
+    id = UUID.uuid4
+    UUID.new_from_bytes(id.bytes).should == id
+  end
+end
+
+describe UUID, '#nil_uuid?' do
+  it 'returns true for the nil (0, UUID::Nil) UUID' do
+    UUID.new(0).should be_nil_uuid
+    UUID::Nil.should be_nil_uuid
+  end
+  
+  it 'returns false for non-nil UUIDs' do
+    UUID.parse('2f2b66f0-90ca-11dd-a935-000ea6f788fa').should_not be_nil_uuid
+    UUID.uuid4.should_not be_nil_uuid
   end
 end
 
