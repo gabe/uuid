@@ -121,7 +121,7 @@ class UUID
     unless str =~ /^(urn:uuid:)?[0-9a-fA-F]{8}((-)?[0-9a-fA-F]{4}){3}(-)?[0-9a-fA-F]{12}$/
       raise ArgumentError, "#{str} is not a recognized UUID representation"
     end
-    new_from_bytes (str.gsub(/(^urn:uuid:|-)/, '').downcase.unpack('a2' * 16).collect { |x| x.to_i(16) }.pack('C*'))
+    new_from_bytes str.gsub(/(^urn:uuid:|-)/, '').downcase.unpack('a2' * 16).collect { |x| x.to_i(16) }.pack('C*')
   end
   
   def self.uuid4

@@ -81,6 +81,12 @@ describe UUID, '#nil_uuid?' do
   end
 end
 
+describe UUID, '#hex' do
+  it 'returns a UUID string in undelimited hex format (i.e., xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx)' do
+    UUID.uuid4.hex.should =~ /^[0-9a-fA-F]{8}([0-9a-fA-F]{4}){3}[0-9a-fA-F]{12}$/
+  end
+end
+
 describe UUID, '#to_i' do
   it 'returns an unsigned integer representation of the UUID' do
     i = UUID.uuid4.to_i
@@ -95,12 +101,6 @@ delimited_hex_format = /[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}/
 describe UUID, '#to_s' do
   it 'returns a UUID string in delimited hex format (i.e., xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)' do
     UUID.uuid4.to_s.should =~ /^#{delimited_hex_format}$/
-  end
-end
-
-describe UUID, '#hex' do
-  it 'returns a UUID string in undelimited hex format (i.e., xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx)' do
-    UUID.uuid4.hex.should =~ /^[0-9a-fA-F]{8}([0-9a-fA-F]{4}){3}[0-9a-fA-F]{12}$/
   end
 end
 
